@@ -2,290 +2,453 @@
 <html lang="de">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0A0B0C">
 <title>Luchs</title>
-<link rel="stylesheet" href="schrift.css">
-<meta name="description" content="Ein Betriebssystem, ein Messenger, ein Server. Alles an einem Ort.">
+<meta name="description" content="Ein Linux-System, ein Messenger und ein Minecraft-Server. Ein privates Projekt, offen für alle.">
 <meta property="og:title" content="Luchs">
-<meta property="og:description" content="Ein Betriebssystem, ein Messenger, ein Server.">
+<meta property="og:description" content="Ein Linux-System, ein Messenger und ein Minecraft-Server.">
 <meta property="og:type" content="website">
+<link rel="stylesheet" href="schrift.css">
 <link rel="icon" href="marke.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="marke.svg">
 
 <style>
+/* ═══════════════════════════════════════════════════════
+   Luchs
 
-
+   Von klein nach groß gebaut: Die Grundregeln gelten für das
+   Telefon, größere Bildschirme bekommen Ergänzungen. Andersherum
+   endet man immer bei einer zusammengequetschten Desktopseite.
+   ═══════════════════════════════════════════════════════ */
 
 :root{
-  /* Flächen */
-  --ink:#0A0B0C; --coal:#111214; --card:#17181B; --card-hoch:#1E2023;
+  --ink:#0A0B0C; --card:#16171A; --card-hoch:#1D1F22;
   --line:rgba(255,255,255,.08); --line-stark:rgba(255,255,255,.16);
 
-  /* Schrift */
   --text:#F0EEEA; --muted:#9A9C9F; --dim:#6B6D70;
 
-  /* Akzent */
-  --accent:#E8A05C; --accent-tief:#B26B28; --auf-akzent:#2A1B0C;
+  --akzent:#E8A05C; --akzent-tief:#B26B28; --auf-akzent:#2A1B0C;
+  --gruen:#67D98A; --rot:#E0736A;
 
-  /* Eine Größenreihe. Jeder Wert das 1,25-fache des vorigen --
-     dadurch stehen die Größen in einem Verhältnis zueinander statt
-     zufällig nebeneinander. */
-  --t1:13px; --t2:15px; --t3:17px; --t4:21px; --t5:27px; --t6:42px;
+  /* Größen. Jeder Wert das 1,25-fache des vorigen -- dadurch stehen
+     sie in einem Verhältnis statt zufällig nebeneinander. */
+  --t1:13px; --t2:15px; --t3:17px; --t4:20px;
+  --t6:clamp(34px, 9vw, 58px);
 
-  /* Ein Satz Abstände, alles Vielfache von 4 */
-  --a1:8px; --a2:12px; --a3:16px; --a4:24px; --a5:36px;
-  --a6:56px; --a7:88px;
+  /* Abstände, alles Vielfache von 4 */
+  --a1:8px; --a2:12px; --a3:16px; --a4:24px; --a5:32px;
+  --a6:48px; --a7:72px;
 
-  --radius:14px; --radius-gross:20px;
-  --font:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  --rand:20px;
+  --radius-gross:18px;
   --kurve:cubic-bezier(.22,.61,.36,1);
 }
-*{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{
-  background:var(--ink); color:var(--text); font-family:var(--font);
-  line-height:1.6; -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;font-feature-settings:'calt' 1,'kern' 1,'tnum' 1;
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+html{
+  scroll-behavior:smooth;
+  /* Verhindert, dass iOS beim Drehen die Schrift eigenmächtig
+     vergrößert */
+  -webkit-text-size-adjust:100%;
 }
 
-/* Sehr schwacher warmer Schimmer im Hintergrund. Reines Schwarz wirkt
-   flach; ein Hauch Farbe gibt Tiefe, ohne dass man sie benennen kann. */
+body{
+  background:var(--ink); color:var(--text);
+  font-family:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  font-size:var(--t2); line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+  font-feature-settings:'calt' 1,'kern' 1,'tnum' 1;
+  overflow-x:hidden;
+}
+
+/* Ein sehr schwacher warmer Schimmer. Reines Schwarz wirkt flach;
+   ein Hauch Farbe gibt Tiefe, ohne dass man sie benennen kann. */
 body::before{
   content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
   background:
-    radial-gradient(60vw 50vh at 18% 0%, rgba(90,96,110,.20), transparent 70%),
-    radial-gradient(55vw 45vh at 85% 90%, rgba(150,104,60,.16), transparent 70%);
+    radial-gradient(70vw 50vh at 15% -5%, rgba(96,102,116,.20), transparent 70%),
+    radial-gradient(60vw 45vh at 90% 100%, rgba(150,104,60,.16), transparent 70%);
 }
-.wrap{position:relative; z-index:1; max-width:1080px; margin:0 auto; padding:0 24px}
 
-/* ── Kopf ───────────────────────────────────────────── */
-header{padding:28px 0; display:flex; align-items:center; justify-content:space-between}
-.marke{display:flex; align-items:center; gap:12px; text-decoration:none; color:var(--text)}
-.marke svg{width:32px; height:32px; display:block}
-.marke span{font-size:19px; font-weight:500; letter-spacing:-.2px}
-nav{display:flex; gap:28px}
-nav a{color:var(--muted); text-decoration:none; font-size:15px; transition:color .15s}
-nav a:hover{color:var(--text)}
-@media(max-width:640px){nav{display:none}}
+.wrap{
+  position:relative; z-index:1;
+  max-width:1000px; margin:0 auto;
+  padding-left:max(var(--rand), env(safe-area-inset-left));
+  padding-right:max(var(--rand), env(safe-area-inset-right));
+}
 
-/* ── Titelbereich ───────────────────────────────────── */
-.hero{padding:96px 0 72px; text-align:center}
-.hero .zeichen{width:96px; height:96px; margin:0 auto 32px; display:block}
-.hero h1{font-size:clamp(40px,7vw,68px); font-weight:500; letter-spacing:-2px; line-height:1.05}
+a{color:inherit}
+
+/* ── Kopfleiste ──────────────────────────────────────────
+   Bleibt beim Scrollen oben. Auf dem Telefon ist das wichtiger als
+   am Rechner: Man scrollt weit und will trotzdem zurückkommen. */
+header{
+  position:sticky; top:0; z-index:20;
+  background:rgba(10,11,12,.78);
+  backdrop-filter:saturate(160%) blur(14px);
+  -webkit-backdrop-filter:saturate(160%) blur(14px);
+  border-bottom:1px solid transparent;
+  transition:border-color .25s var(--kurve);
+}
+header.gescrollt{border-bottom-color:var(--line)}
+header .innen{
+  display:flex; align-items:center; justify-content:space-between;
+  gap:var(--a3); min-height:56px;
+}
+.marke{display:flex; align-items:center; gap:10px; text-decoration:none}
+.marke img{width:28px; height:28px; border-radius:7px; display:block}
+.marke span{font-size:var(--t3); font-weight:500; letter-spacing:-.01em}
+
+nav{display:flex; gap:var(--a4)}
+nav a{
+  color:var(--muted); text-decoration:none; font-size:var(--t2);
+  padding:var(--a1) 0; transition:color .15s var(--kurve);
+}
+nav a:hover,nav a:focus-visible{color:var(--text)}
+
+/* Auf schmalen Schirmen wandert die Navigation in eine eigene Zeile,
+   statt zu verschwinden. Versteckte Menüs findet auf dem Telefon
+   niemand. */
+@media (max-width:560px){
+  header .innen{flex-wrap:wrap; padding-bottom:var(--a1)}
+  nav{width:100%; gap:var(--a4)}
+  nav a{font-size:var(--t1)}
+}
+
+/* ── Titelbereich ───────────────────────────────────────── */
+.hero{padding:var(--a7) 0 var(--a6); text-align:center}
+.hero img{
+  width:clamp(64px,18vw,88px); height:clamp(64px,18vw,88px);
+  margin:0 auto var(--a4); display:block; border-radius:22%;
+}
+.hero h1{
+  font-size:var(--t6); font-weight:500;
+  /* Große Schrift braucht engere Laufweite, sonst zerfällt das Wort */
+  letter-spacing:-.035em; line-height:1.02;
+}
 .hero p{
-  margin:20px auto 0; max-width:520px; font-size:clamp(16px,2.2vw,19px);
-  color:var(--muted);
+  margin:var(--a3) auto 0; max-width:34ch;
+  font-size:clamp(15px,4vw,18px); color:var(--muted);
+  text-wrap:balance;
 }
-.knopfreihe{margin-top:40px; display:flex; gap:12px; justify-content:center; flex-wrap:wrap}
-.knopf{
-  display:inline-flex; align-items:center; gap:9px; min-height:48px;
-  padding:0 26px; border-radius:24px; text-decoration:none;
-  font-size:15px; font-weight:500; transition:transform .15s var(--kurve),opacity .15s var(--kurve);
-}
-.knopf:active{transform:scale(.985)}
-.knopf.voll{background:var(--accent); color:#2A1B0C}
-.knopf.voll:hover{opacity:.9}
-.knopf.leer{border:1px solid var(--line); color:var(--text)}
-.knopf.leer:hover{border-color:var(--muted)}
 
-/* ── Karten ─────────────────────────────────────────── */
-section{padding:var(--a6) 0}
-h2{font-size:13px; letter-spacing:1.4px; color:var(--dim); font-weight:500; margin-bottom:24px}
-.raster{display:grid; gap:16px; grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
-.karte{
-  background:var(--card); border:1px solid var(--line); border-radius:var(--radius-gross);
-  padding:var(--a4); text-decoration:none; color:var(--text); display:block;
-  transition:border-color .2s var(--kurve),background .2s var(--kurve),transform .2s var(--kurve);
+.knopfreihe{
+  margin-top:var(--a5); display:flex; gap:var(--a2);
+  justify-content:center; flex-wrap:wrap;
 }
-.karte:hover{border-color:rgba(232,160,92,.45); transform:translateY(-2px)}
-.karte .oben{display:flex; align-items:center; gap:13px; margin-bottom:14px}
+.knopf{
+  display:inline-flex; align-items:center; justify-content:center;
+  min-height:48px; padding:0 var(--a4); border-radius:24px;
+  text-decoration:none; font-size:var(--t2); font-weight:500;
+  transition:transform .15s var(--kurve), opacity .15s var(--kurve),
+             border-color .15s var(--kurve);
+}
+.knopf:active{transform:scale(.98)}
+.knopf.voll{background:var(--akzent); color:var(--auf-akzent)}
+.knopf.voll:hover{opacity:.9}
+.knopf.leer{border:1px solid var(--line-stark); color:var(--text)}
+.knopf.leer:hover{border-color:var(--muted)}
+/* Auf sehr schmalen Schirmen untereinander und volle Breite --
+   nebeneinander werden sie sonst zu schmal zum Treffen. */
+@media (max-width:400px){
+  .knopfreihe{flex-direction:column}
+  .knopf{width:100%}
+}
+
+/* ── Abschnitte ─────────────────────────────────────────── */
+section{padding:var(--a6) 0; scroll-margin-top:72px}
+h2{
+  font-size:var(--t4); font-weight:500; letter-spacing:-.015em;
+  margin-bottom:var(--a1);
+}
+.unterzeile{color:var(--muted); font-size:var(--t2); margin-bottom:var(--a4)}
+
+.raster{display:grid; gap:var(--a3); grid-template-columns:1fr}
+@media (min-width:620px){ .raster{grid-template-columns:1fr 1fr} }
+
+.karte{
+  background:var(--card); border:1px solid var(--line);
+  border-radius:var(--radius-gross); padding:var(--a4);
+  text-decoration:none; color:var(--text); display:block;
+  transition:border-color .2s var(--kurve), background .2s var(--kurve),
+             transform .2s var(--kurve);
+}
+@media (hover:hover){
+  .karte:hover{
+    border-color:var(--line-stark); background:var(--card-hoch);
+    transform:translateY(-2px);
+  }
+}
+.karte:active{transform:scale(.995)}
+.karte .oben{display:flex; align-items:center; gap:var(--a2); margin-bottom:var(--a2)}
 .kachel{
   width:40px; height:40px; border-radius:11px; flex:0 0 auto;
   display:grid; place-items:center;
 }
-.kachel svg{width:22px; height:22px; stroke:#fff; fill:none;
-  stroke-width:2; stroke-linecap:round; stroke-linejoin:round}
-.karte h3{font-size:17px; font-weight:500}
-.karte p{font-size:14px; color:var(--muted); line-height:1.55}
-.stand{
-  display:inline-block; margin-top:14px; font-size:12px; padding:3px 10px;
-  border-radius:20px; border:1px solid var(--line); color:var(--dim);
+.kachel svg{
+  width:21px; height:21px; stroke:#fff; fill:none;
+  stroke-width:2; stroke-linecap:round; stroke-linejoin:round;
 }
-.stand.aktiv{border-color:rgba(103,217,138,.35); color:#67D98A}
-.stand.aus{border-color:rgba(224,115,106,.3); color:#E0736A}
-.namen{margin-top:12px; display:flex; flex-wrap:wrap; gap:6px}
-.namen span{
-  font-size:12px; padding:3px 9px; border-radius:20px;
-  background:rgba(255,255,255,.05); color:var(--muted);
-}
+.karte h3{font-size:var(--t3); font-weight:500; letter-spacing:-.01em}
+.karte p{font-size:var(--t2); color:var(--muted); line-height:1.6}
 
-/* ── Fuß ────────────────────────────────────────────── */
+.stand{
+  display:inline-flex; align-items:center; gap:6px;
+  margin-top:var(--a2); font-size:var(--t1);
+  padding:4px 11px; border-radius:20px;
+  border:1px solid var(--line); color:var(--dim);
+}
+.stand.aktiv{border-color:rgba(103,217,138,.35); color:var(--gruen)}
+.stand.aus{border-color:rgba(224,115,106,.3); color:var(--rot)}
+.punkt{width:7px; height:7px; border-radius:50%; background:currentColor}
+
+/* ── Fortschritt ────────────────────────────────────────── */
+.schritte{display:grid}
+.schritt{
+  display:flex; gap:var(--a3); align-items:flex-start;
+  padding:var(--a3) 0; border-bottom:1px solid var(--line);
+}
+.schritt:last-child{border-bottom:0}
+.haken{
+  width:22px; height:22px; border-radius:50%; flex:0 0 auto; margin-top:2px;
+  display:grid; place-items:center; font-size:12px; line-height:1;
+}
+.haken.fertig{background:var(--gruen); color:#06280F}
+.haken.laeuft{border:2px solid var(--akzent); color:var(--akzent)}
+.haken.offen{border:2px solid var(--line-stark)}
+.schritt b{display:block; font-weight:500; font-size:var(--t2)}
+.schritt span.text{display:block; color:var(--muted); font-size:var(--t1); margin-top:2px}
+
+/* ── Fußzeile ───────────────────────────────────────────── */
 footer{
-  border-top:1px solid var(--line); margin-top:48px; padding:36px 0 56px;
-  display:flex; justify-content:space-between; gap:20px; flex-wrap:wrap;
-  color:var(--dim); font-size:14px;
+  border-top:1px solid var(--line); margin-top:var(--a5);
+  padding:var(--a4) 0 calc(var(--a6) + env(safe-area-inset-bottom));
+  display:flex; justify-content:space-between; gap:var(--a3);
+  flex-wrap:wrap; color:var(--dim); font-size:var(--t1);
 }
 footer a{color:var(--muted); text-decoration:none}
 footer a:hover{color:var(--text)}
-.fuss-links{display:flex; gap:22px; flex-wrap:wrap}
+.fuss-links{display:flex; gap:var(--a4); flex-wrap:wrap}
+
+/* Wer Bewegung ausgeschaltet hat, bekommt keine. */
+@media (prefers-reduced-motion:reduce){
+  *{animation:none !important; transition:none !important}
+  html{scroll-behavior:auto}
+}
+
+/* Sichtbarer Fokusrahmen für Tastaturbedienung */
+a:focus-visible{
+  outline:2px solid var(--akzent); outline-offset:3px; border-radius:6px;
+}
 </style>
 </head>
 <body>
-<div class="wrap">
 
-<header>
-  <a class="marke" href="#">
-    <!-- Der Luchs: zwei Ohrpinsel und ein Kopf, geometrisch reduziert.
-         Ein Tier als Marke ist wiedererkennbarer als ein Buchstabe. -->
-    <img src="marke.svg" alt="Luchs" width="30" height="30">
-    <span>Luchs</span>
-  </a>
-  <nav>
-    <a href="#projekte">Projekte</a>
-    <a href="#mitmachen">Mitmachen</a>
-    <a href="#kontakt">Kontakt</a>
-  </nav>
+<header id="kopf">
+  <div class="wrap innen">
+    <a class="marke" href="#oben">
+      <img src="marke.svg" alt="" width="28" height="28">
+      <span>Luchs</span>
+    </a>
+    <nav>
+      <a href="#projekte">Projekte</a>
+      <a href="#stand">Stand</a>
+      <a href="#mitmachen">Mitmachen</a>
+    </nav>
+  </div>
 </header>
 
-<div class="hero">
-  <img class="zeichen" src="marke.svg" alt="Luchs" width="88" height="88">
-  <h1>Luchs</h1>
-  <p>Hier entstehen ein Linux-System, ein Messenger und ein
-     Minecraft-Server. Ein privates Projekt, offen für alle.</p>
-  <div class="knopfreihe">
-    <a class="knopf voll" href="#projekte">Projekte ansehen</a>
-    <a class="knopf leer" href="https://github.com/">Zum Quelltext</a>
+<main class="wrap" id="oben">
+
+  <div class="hero">
+    <img src="marke.svg" alt="Luchs" width="88" height="88">
+    <h1>Luchs</h1>
+    <p>Hier entstehen ein Linux-System, ein Messenger und ein
+       Minecraft-Server. Ein privates Projekt, offen für alle.</p>
+    <div class="knopfreihe">
+      <a class="knopf voll" href="#projekte">Projekte ansehen</a>
+      <a class="knopf leer" href="https://github.com/realcraftguy-com/luchsos">Zum Quelltext</a>
+    </div>
   </div>
-</div>
 
-<section id="projekte">
-  <h2>Projekte</h2>
-  <div class="raster">
+  <section id="projekte">
+    <h2>Projekte</h2>
+    <p class="unterzeile">Drei Dinge, an denen gerade gebaut wird.</p>
 
-    <a class="karte" href="#">
-      <div class="oben">
-        <div class="kachel" style="background:linear-gradient(160deg,#5AA9F8,#1A62D8)">
-          <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+    <div class="raster">
+
+      <a class="karte" href="#stand">
+        <div class="oben">
+          <div class="kachel" style="background:linear-gradient(160deg,#5AA9F8,#1A62D8)">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+          </div>
+          <h3>Luchs OS</h3>
         </div>
-        <h3>Luchs OS</h3>
-      </div>
-      <p>Ein Linux-System auf Arch-Basis mit eigener Oberfläche.
-         Es zeigt keine Werbung und verlangt kein Konto.</p>
-      <span class="stand">Wird gerade gebaut</span>
-    </a>
+        <p>Ein Linux-System auf Arch-Basis mit eigener Oberfläche.
+           Es zeigt keine Werbung und verlangt kein Konto.</p>
+        <span class="stand">Wird gerade gebaut</span>
+      </a>
 
-    <a class="karte" href="#">
-      <div class="oben">
-        <div class="kachel" style="background:linear-gradient(160deg,#63DE7C,#17A03E)">
-          <svg viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-8 8H7l-4 3v-6a8 8 0 0 1 8-8h2a8 8 0 0 1 8 3z"/></svg>
+      <a class="karte" href="#stand">
+        <div class="oben">
+          <div class="kachel" style="background:linear-gradient(160deg,#63DE7C,#17A03E)">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a8 8 0 0 1-8 8H7l-4 3v-6a8 8 0 0 1 8-8h2a8 8 0 0 1 8 3z"/></svg>
+          </div>
+          <h3>Luchs Chat</h3>
         </div>
-        <h3>Luchs Chat</h3>
-      </div>
-      <p>Ein Messenger für die eigenen Geräte.
-         Steht noch ganz am Anfang.</p>
-      <span class="stand">Noch nicht angefangen</span>
-    </a>
+        <p>Ein Messenger für die eigenen Geräte.
+           Steht noch ganz am Anfang.</p>
+        <span class="stand">Noch nicht angefangen</span>
+      </a>
 
-    <a class="karte" href="#">
-      <div class="oben">
-        <div class="kachel" style="background:linear-gradient(160deg,#A882F0,#5A2FB4)">
-          <svg viewBox="0 0 24 24"><rect x="2" y="8" width="20" height="10" rx="5"/><path d="M7 13h3M8.5 11.5v3"/><circle cx="16" cy="12" r="1.2" fill="#fff" stroke="none"/><circle cx="18" cy="15" r="1.2" fill="#fff" stroke="none"/></svg>
+      <a class="karte" href="#stand">
+        <div class="oben">
+          <div class="kachel" style="background:linear-gradient(160deg,#A882F0,#5A2FB4)">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="8" width="20" height="10" rx="5"/><path d="M7 13h3M8.5 11.5v3"/><circle cx="16" cy="12" r="1.2" fill="#fff" stroke="none"/><circle cx="18" cy="15" r="1.2" fill="#fff" stroke="none"/></svg>
+          </div>
+          <h3>Luchs MC</h3>
         </div>
-        <h3>Luchs MC</h3>
-      </div>
-      <p>Der Minecraft-Server. Hier findest du die Adresse
-         und siehst, wer gerade spielt.</p>
-      <span class="stand" id="mc-stand">wird geprüft …</span>
-      <div id="mc-namen" class="namen"></div>
-    </a>
+        <p>Der Minecraft-Server. Hier findest du die Adresse
+           und siehst, wer gerade spielt.</p>
+        <span class="stand" id="mc-stand">
+          <span class="punkt"></span><span id="mc-text">wird geprüft</span>
+        </span>
+      </a>
 
-    <a class="karte" href="#">
-      <div class="oben">
-        <div class="kachel" style="background:linear-gradient(160deg,#C9A46E,#8A6224)">
-          <svg viewBox="0 0 24 24"><path d="M5 4h10l4 4v12H5z"/><path d="M15 4v4h4M9 13h6M9 17h4"/></svg>
+      <a class="karte" href="#mitmachen">
+        <div class="oben">
+          <div class="kachel" style="background:linear-gradient(160deg,#C9A46E,#8A6224)">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h10l4 4v12H5z"/><path d="M15 4v4h4M9 13h6M9 17h4"/></svg>
+          </div>
+          <h3>Anleitungen</h3>
         </div>
-        <h3>Anleitungen</h3>
+        <p>Wie man Luchs installiert, einrichtet und wieder
+           heil bekommt, wenn etwas klemmt.</p>
+        <span class="stand">Erste Seiten stehen</span>
+      </a>
+
+    </div>
+  </section>
+
+  <section id="stand">
+    <h2>Woran gerade gearbeitet wird</h2>
+    <p class="unterzeile">Ehrlich, ohne beschönigte Balken.</p>
+
+    <div class="schritte">
+      <div class="schritt">
+        <span class="haken fertig">✓</span>
+        <div><b>Oberfläche und Symbole</b>
+          <span class="text">Eigenes Aussehen, 42 Symbole, Boot- und Anmeldebildschirm.</span></div>
       </div>
-      <p>Wie man Luchs installiert, einrichtet und wieder
-         heil bekommt, wenn etwas klemmt.</p>
-      <span class="stand">Erste Seiten stehen</span>
-    </a>
+      <div class="schritt">
+        <span class="haken fertig">✓</span>
+        <div><b>Installer</b>
+          <span class="text">Zwei Stufen: erst installieren, dann einrichten.</span></div>
+      </div>
+      <div class="schritt">
+        <span class="haken fertig">✓</span>
+        <div><b>Treiber, Sicherung, Firewall</b>
+          <span class="text">Erkennt die Hardware selbst und richtet passend ein.</span></div>
+      </div>
+      <div class="schritt">
+        <span class="haken laeuft">•</span>
+        <div><b>Erster Testlauf auf echter Hardware</b>
+          <span class="text">Bisher wurde nichts davon je gestartet. Das ist der nächste Schritt.</span></div>
+      </div>
+      <div class="schritt">
+        <span class="haken offen"></span>
+        <div><b>Softwareverwaltung</b>
+          <span class="text">Programme suchen und installieren, über pacman und Flatpak.</span></div>
+      </div>
+      <div class="schritt">
+        <span class="haken offen"></span>
+        <div><b>Messenger</b>
+          <span class="text">Noch nicht begonnen.</span></div>
+      </div>
+    </div>
+  </section>
 
-  </div>
-</section>
+  <section id="mitmachen">
+    <h2>Mitmachen</h2>
+    <p class="unterzeile">Der Code liegt offen. Fragen sind willkommen.</p>
 
-<section id="mitmachen">
-  <h2>Mitmachen</h2>
-  <div class="raster">
-    <a class="karte" href="https://github.com/">
-      <div class="oben">
-        <div class="kachel" style="background:linear-gradient(160deg,#8E959F,#3A3F48)">
-          <svg viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.9a3.4 3.4 0 0 0-.9-2.6c3-.3 6.2-1.5 6.2-6.7A5.2 5.2 0 0 0 19.9 5a4.9 4.9 0 0 0-.1-3.6s-1.1-.3-3.7 1.4a12.7 12.7 0 0 0-6.6 0C6.9 1.1 5.8 1.4 5.8 1.4A4.9 4.9 0 0 0 5.7 5a5.2 5.2 0 0 0-1.4 3.6c0 5.2 3.2 6.4 6.2 6.7a3.4 3.4 0 0 0-.9 2.6V22"/></svg>
+    <div class="raster">
+      <a class="karte" href="https://github.com/realcraftguy-com/luchsos">
+        <div class="oben">
+          <div class="kachel" style="background:linear-gradient(160deg,#8E959F,#3A3F48)">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.9a3.4 3.4 0 0 0-.9-2.6c3-.3 6.2-1.5 6.2-6.7A5.2 5.2 0 0 0 19.9 5a4.9 4.9 0 0 0-.1-3.6s-1.1-.3-3.7 1.4a12.7 12.7 0 0 0-6.6 0C6.9 1.1 5.8 1.4 5.8 1.4A4.9 4.9 0 0 0 5.7 5a5.2 5.2 0 0 0-1.4 3.6c0 5.2 3.2 6.4 6.2 6.7a3.4 3.4 0 0 0-.9 2.6V22"/></svg>
+          </div>
+          <h3>Quelltext</h3>
         </div>
-        <h3>Quelltext</h3>
-      </div>
-      <p>Der gesamte Code liegt offen. Wer einen Fehler findet
-         oder mitbauen möchte, ist willkommen.</p>
-    </a>
+        <p>Der gesamte Code liegt offen. Wer einen Fehler findet
+           oder mitbauen möchte, ist willkommen.</p>
+      </a>
 
-    <a class="karte" href="#kontakt">
-      <div class="oben">
-        <div class="kachel" style="background:linear-gradient(160deg,#7F94A6,#42566A)">
-          <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M4 7l8 6 8-6"/></svg>
+      <a class="karte" href="https://github.com/realcraftguy-com/luchsos/issues">
+        <div class="oben">
+          <div class="kachel" style="background:linear-gradient(160deg,#FF9A6C,#E0483C)">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
+          </div>
+          <h3>Fehler melden</h3>
         </div>
-        <h3>Kontakt</h3>
-      </div>
-      <p>Fragen, Ideen, oder etwas funktioniert nicht?
-         Schreib mir einfach.</p>
-    </a>
-  </div>
-</section>
+        <p>Etwas funktioniert nicht oder sieht falsch aus?
+           Schreib es auf, auch wenn es kleinlich wirkt.</p>
+      </a>
+    </div>
+  </section>
 
-<footer id="kontakt">
-  <div>© <span id="jahr">2026</span> Luchs · Freie Software, privat entwickelt</div>
-  <div class="fuss-links">
-    <a href="https://github.com/">GitHub</a>
-    <a href="impressum.html">Impressum</a>
-    <a href="datenschutz.html">Datenschutz</a>
-  </div>
-</footer>
+  <footer>
+    <div>© <span id="jahr">2026</span> Luchs · Freie Software, privat entwickelt</div>
+    <div class="fuss-links">
+      <a href="https://github.com/realcraftguy-com/luchsos">GitHub</a>
+      <a href="impressum.html">Impressum</a>
+      <a href="datenschutz.html">Datenschutz</a>
+    </div>
+  </footer>
 
-</div>
+</main>
+
 <script>
 document.getElementById('jahr').textContent = new Date().getFullYear();
 
-// Serverstatus. Die Datei wird alle 60 Sekunden vom Server neu
-// geschrieben -- häufiger abzufragen bringt nichts.
+/* Kopfleiste bekommt eine Trennlinie, sobald gescrollt wird.
+   Ohne sie schwebt sie kantenlos über dem Inhalt. */
+const kopf = document.getElementById('kopf');
+const beobachter = () => kopf.classList.toggle('gescrollt', window.scrollY > 8);
+beobachter();
+addEventListener('scroll', beobachter, { passive:true });
+
+/* Serverstatus. Die Datei wird auf dem Server alle 60 Sekunden neu
+   geschrieben. Gibt es sie nicht -- etwa auf GitHub Pages -- bleibt
+   es bei einer neutralen Angabe statt einer Fehlermeldung. */
 async function mcStatus(){
-  const abzeichen = document.getElementById('mc-stand');
-  const namen = document.getElementById('mc-namen');
-  if (!abzeichen) return;
+  const kasten = document.getElementById('mc-stand');
+  const text = document.getElementById('mc-text');
+  if (!kasten) return;
   try {
-    const r = await fetch('/api/mc-status.json', { cache: 'no-store' });
+    const r = await fetch('api/mc-status.json', { cache:'no-store' });
     if (!r.ok) throw new Error(r.status);
     const d = await r.json();
-
     if (d.online) {
-      abzeichen.className = 'stand aktiv';
-      abzeichen.textContent = d.spieler === 0
+      kasten.className = 'stand aktiv';
+      text.textContent = d.spieler === 0
         ? 'Online · niemand da'
-        : `Online · ${d.spieler} von ${d.maximal}`;
-      // Namen nur zeigen, wenn welche gemeldet werden. Viele Server
-      // schalten die Liste aus, dann bleibt es leer statt falsch.
-      namen.innerHTML = (d.namen || [])
-        .map(n => `<span>${n.replace(/[<>&]/g, '')}</span>`).join('');
+        : 'Online · ' + d.spieler + ' von ' + d.maximal;
     } else {
-      abzeichen.className = 'stand aus';
-      abzeichen.textContent = 'Offline';
-      namen.innerHTML = '';
+      kasten.className = 'stand aus';
+      text.textContent = 'Offline';
     }
   } catch (e) {
-    abzeichen.className = 'stand';
-    abzeichen.textContent = 'Status unbekannt';
+    kasten.className = 'stand';
+    text.textContent = 'Adresse auf Anfrage';
   }
 }
 mcStatus();
 setInterval(mcStatus, 60000);
-// Beim Zurückkommen auf den Tab sofort auffrischen
-document.addEventListener('visibilitychange', () => {
+document.addEventListener('visibilitychange', function(){
   if (!document.hidden) mcStatus();
 });
 </script>
